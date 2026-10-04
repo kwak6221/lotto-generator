@@ -1,0 +1,239 @@
+\
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f2937">
+<title>행운의 로또 6/45 번호 생성기</title>
+<meta name="description" content="클릭 한 번으로 로또 6/45 번호 5게임을 생성하는 무료 번호 생성기">
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#111827;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --accent:#111827;
+    --accent2:#374151;
+    --ball1:#f7c948;
+    --ball2:#63c4f0;
+    --ball3:#ff8c69;
+    --ball4:#8bd17c;
+    --ball5:#b38cff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",sans-serif;
+    background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 48%,#fff7ed 100%);
+    color:var(--text);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 16px 48px}
+  .hero{text-align:center;margin-bottom:20px}
+  .badge{
+    display:inline-block;padding:7px 12px;border-radius:999px;
+    background:#111827;color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em
+  }
+  h1{font-size:clamp(28px,6vw,42px);margin:12px 0 8px;letter-spacing:-.04em}
+  .subtitle{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+  .card{
+    background:rgba(255,255,255,.92);border:1px solid rgba(229,231,235,.9);
+    border-radius:24px;padding:20px;box-shadow:0 18px 50px rgba(17,24,39,.08);
+    backdrop-filter:blur(8px)
+  }
+  .topbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}
+  button{
+    border:0;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:800;
+    cursor:pointer;transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+  button:active{transform:scale(.98)}
+  .primary{
+    flex:1;min-width:220px;background:var(--accent);color:#fff;
+    box-shadow:0 10px 24px rgba(17,24,39,.20)
+  }
+  .secondary{background:#fff;color:var(--text);border:1px solid var(--line)}
+  .secondary:hover,.primary:hover{opacity:.93}
+  .games{display:grid;gap:12px}
+  .game{
+    border:1px solid var(--line);border-radius:18px;padding:14px 12px;
+    background:#fff
+  }
+  .game-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .game-title{font-size:13px;font-weight:900}
+  .copy-one{
+    padding:7px 10px;font-size:12px;border-radius:10px;
+    background:#f3f4f6;color:#374151;border:1px solid #e5e7eb
+  }
+  .balls{display:flex;flex-wrap:wrap;gap:8px}
+  .ball{
+    width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+    color:#111827;font-size:16px;font-weight:900;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.08)
+  }
+  .small-note{text-align:center;margin:16px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+  .notice{
+    margin-top:14px;padding:12px 14px;border-radius:14px;background:#f9fafb;
+    border:1px solid var(--line);font-size:12px;color:#6b7280;line-height:1.65
+  }
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);
+    background:#111827;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;
+    opacity:0;pointer-events:none;transition:.2s ease;z-index:50
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .empty{
+    text-align:center;border:1px dashed #cbd5e1;border-radius:18px;padding:38px 18px;
+    color:var(--muted);background:#f8fafc
+  }
+  .footer{text-align:center;color:#9ca3af;font-size:11px;margin-top:18px}
+  @media (max-width:480px){
+    .wrap{padding:22px 12px 36px}
+    .card{padding:14px;border-radius:20px}
+    .ball{width:42px;height:42px;font-size:15px}
+    .primary{min-width:100%}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <span class="badge">LOTTO 6/45</span>
+    <h1>행운의 로또 번호 생성기</h1>
+    <p class="subtitle">버튼을 누르면 무작위 번호 5게임이 바로 생성됩니다.</p>
+  </header>
+
+  <section class="card" aria-live="polite">
+    <div class="topbar">
+      <button class="primary" id="generateBtn">🍀 행운 번호 5게임 생성하기</button>
+      <button class="secondary" id="copyAllBtn" type="button">전체 복사</button>
+    </div>
+
+    <div id="games" class="games">
+      <div class="empty">위 버튼을 눌러 오늘의 로또 번호를 생성해 보세요.</div>
+    </div>
+
+    <div class="small-note">각 게임은 1~45에서 중복 없이 6개를 무작위로 뽑습니다.</div>
+    <div class="notice">
+      ※ 이 번호는 당첨을 예측하거나 보장하는 번호가 아니라 무작위로 생성한 조합입니다.
+      복권은 건전하게 즐겨 주세요.
+    </div>
+  </section>
+
+  <div class="footer">행운의 로또 번호 생성기 · Lotto 6/45</div>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const gameCount = 5;
+  let latestGames = [];
+
+  function secureRandomInt(maxExclusive){
+    if (window.crypto && crypto.getRandomValues) {
+      const maxUint = 0x100000000;
+      const limit = Math.floor(maxUint / maxExclusive) * maxExclusive;
+      const arr = new Uint32Array(1);
+      do {
+        crypto.getRandomValues(arr);
+      } while (arr[0] >= limit);
+      return arr[0] % maxExclusive;
+    }
+    return Math.floor(Math.random() * maxExclusive);
+  }
+
+  function makeGame(){
+    const pool = Array.from({length:45}, (_,i)=>i+1);
+    for(let i=pool.length-1;i>0;i--){
+      const j = secureRandomInt(i+1);
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0,6).sort((a,b)=>a-b);
+  }
+
+  function generateGames(){
+    const unique = new Set();
+    const games = [];
+    while(games.length < gameCount){
+      const game = makeGame();
+      const key = game.join("-");
+      if(!unique.has(key)){
+        unique.add(key);
+        games.push(game);
+      }
+    }
+    latestGames = games;
+    render(games);
+  }
+
+  function colorFor(n){
+    if(n<=10) return "var(--ball1)";
+    if(n<=20) return "var(--ball2)";
+    if(n<=30) return "var(--ball3)";
+    if(n<=40) return "var(--ball4)";
+    return "var(--ball5)";
+  }
+
+  function render(games){
+    const container = document.getElementById("games");
+    container.innerHTML = games.map((game, idx) => `
+      <article class="game">
+        <div class="game-head">
+          <span class="game-title">게임 ${idx+1}</span>
+          <button class="copy-one" type="button" data-copy="${game.join(", ")}">복사</button>
+        </div>
+        <div class="balls">
+          ${game.map(n => `<span class="ball" style="background:${colorFor(n)}">${n}</span>`).join("")}
+        </div>
+      </article>
+    `).join("");
+
+    container.querySelectorAll("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", () => copyText(btn.dataset.copy));
+    });
+  }
+
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast("번호를 복사했습니다.");
+    }catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("번호를 복사했습니다.");
+    }
+  }
+
+  function allText(){
+    return latestGames.length
+      ? latestGames.map((g,i)=>`게임 ${i+1}: ${g.join(", ")}`).join("\n")
+      : "";
+  }
+
+  function showToast(message){
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.classList.remove("show"), 1600);
+  }
+
+  document.getElementById("generateBtn").addEventListener("click", generateGames);
+  document.getElementById("copyAllBtn").addEventListener("click", () => {
+    if(!latestGames.length){
+      showToast("먼저 번호를 생성해 주세요.");
+      return;
+    }
+    copyText(allText());
+  });
+})();
+</script>
+</body>
+</html>
